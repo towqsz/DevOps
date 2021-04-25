@@ -1,0 +1,29 @@
+version: '3'
+
+services: 
+  myredis:
+    image: 'postgres:alpine'
+  mypostgres:
+    image: 'postgres:alpine'
+    environment: 
+      - POSTGRES_PASSWORD=1qaz2wsx
+      - POSTGRES_DB=myappdb
+      - POSTGRES_USER=myappuser
+    volumes:
+      - C:\Users\tomas\temp\postgresdata:/var/lib/postgresql/data
+  mybackend:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./mybackend
+    volumes:
+      - /opt/app/node_modules
+      - C:\Users\tomas\temp\compose\mybackend:/opt/app
+    environment: 
+      - POSTGRES_PASSWORD=1qaz2wsx
+      - POSTGRES_DB=myappdb
+      - POSTGRES_USER=myappuser
+      - REDIS_HOST=myredis
+      - POSTGRES_HOST=mypostgres
+    ports: 
+     - "5000:4000"
