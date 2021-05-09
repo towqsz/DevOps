@@ -2,8 +2,10 @@ version: '3'
 
 services: 
   myredis:
-    image: 'postgres:alpine'
+    restart: always
+    image: 'redis:alpine'
   mypostgres:
+    restart: always
     image: 'postgres:alpine'
     environment: 
       - POSTGRES_PASSWORD=1qaz2wsx
@@ -16,6 +18,8 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./mybackend
+    environment: 
+        CHOKIDAR_USEPOLLING: "true"
     volumes:
       - /opt/app/node_modules
       - C:\Users\tomas\temp\compose\mybackend:/opt/app
@@ -26,4 +30,21 @@ services:
       - REDIS_HOST=myredis
       - POSTGRES_HOST=mypostgres
     ports: 
-     - "5000:4000"
+      - "5000:4000"
+  mynginx:
+    restart: always
+    build: 
+      dockerfile: Dockerfile
+      context: ./mynginx
+    ports: 
+      - '9090:80'
+  myfrontend:
+    restart: always
+    build: 
+      dockerfile: Dockerfile.dev
+      context: ./myfrontend
+    environment: 
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - /opt/app/node_modules
+      - C:\Users\tomas\temp\compose\myfrontend:/opt/app

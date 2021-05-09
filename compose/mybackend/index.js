@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 var uuid = require('uuid-random');
 const bodyParser = require("body-parser");
+const redisPORT = process.env.RD_PORT
+const pgPORT = process.env.PG_PORT
 
 const app = express();
 
@@ -12,9 +14,9 @@ const redis = require('redis');
 
 const redisClient = redis.createClient({
     host: "myredis",
-    port: 6379
+    port: "6379",
     //retry_strategy: () => 1000
-});
+}); 
 
 redisClient.on('connect', () => {
     console.log("Connected to redis server.")
@@ -22,9 +24,9 @@ redisClient.on('connect', () => {
 
 const { Pool } = require('pg');
 const pgClient = new Pool({
-    user: "postgres",
+    user: "myappuser",
     password: "1qaz2wsx",
-    database: "postgres",
+    database: "myappdb",
     host: "mypostgres",
     port: "5432"
 });
@@ -61,7 +63,7 @@ app.get("/", (req, res) => {
 });
 
 
-const PORT = 5000;
+const PORT = 4000;
 app.listen(PORT, ()=> {
     console.log(`Api listetning on port ${PORT}`);
 });
