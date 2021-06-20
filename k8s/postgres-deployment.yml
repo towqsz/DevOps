@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: mypostgres-deployment
+  labels:
+    app: mypostgres
+    type: db
+
+spec:
+  template:
+    metadata:
+      name: mypostgres-pod
+      labels:
+        app: mypostgres
+        type: db
+    spec:
+      containers:
+        - name: mypostgres-container
+          image: postgres:alpine
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data/
+              name: postgresvolume
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: myapp-secret
+                  key: PGPASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: mypostgres-config
+                  key: PGDATABASE
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mypostgres-config
+                  key: PGUSER
+      volumes:
+        - name: postgresvolume
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mypostgres
+      type: db

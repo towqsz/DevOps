@@ -4,6 +4,7 @@ metadata:
   name: my-nginx-pod
   labels:
     component: web
+    app: my-app
 
 spec: 
   containers:

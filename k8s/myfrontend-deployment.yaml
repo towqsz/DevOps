@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: myfrontend-deployment
+  labels:
+    component: frontend
+    app: my-app
+
+spec:
+  template:
+    metadata:
+      name: frontend-pod
+      labels:
+        component: frontend
+        app: my-app
+    spec:
+      containers:
+      - name: myfrontend-container
+        image: tgarski/myfrontend
+  
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+      component: frontend

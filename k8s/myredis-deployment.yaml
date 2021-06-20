@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: myredis-deployment
+  labels:
+    component: cache
+    app: my-app
+
+spec:
+  template:
+    metadata:
+      name: myredis-pod
+      labels:
+        component: cache
+        app: my-app
+    spec:
+      containers:
+       - name: myredis-container
+         image: redis:alpine
+
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+      component: cache
